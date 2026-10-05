@@ -1,0 +1,36 @@
+name: ci
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: tests
+        run: node --test
+      - name: witness · mutation gate (no test-theatre)
+        run: node tools/witness.mjs mutate kernel/attest.mjs --test npm test
+      - name: witness · fuzz boundaries (never-throw)
+        run: |
+          node tools/witness.mjs fuzz ./kernel/attest.mjs attest
+          node tools/witness.mjs fuzz ./kernel/attest.mjs recompute
+          node tools/witness.mjs fuzz ./kernel/attest.mjs checkClaim
+      - name: attest · verdicts must be clean (all claims hold)
+        run: |
+          node -e '
+            import("./kernel/attest.mjs").then(async ({ attest }) => {
+              const fs = await import("node:fs");
+              const digest = JSON.parse(fs.readFileSync("estate-digest.json", "utf8"));
+              const manifest = JSON.parse(fs.readFileSync("manifest.json", "utf8"));
+              const r = attest(digest, manifest);
+              console.log(`attest: ${r.summary.held}/${r.summary.total} hold, ${r.summary.drifted} drifted`);
+              for (const x of r.results) if (!x.holds) console.error("DRIFTED:", x.id, x.label);
+              process.exit(r.summary.clean ? 0 : 1);
+            });
+          '
