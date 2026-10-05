@@ -1,0 +1,4 @@
+node_modules/
+*.witnessbak
+*.log
+.DS_Store

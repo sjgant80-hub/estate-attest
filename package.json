@@ -1,0 +1,12 @@
+{
+  "name": "estate-attest",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "The trust rail turned inward: a witness-gated kernel + live page that re-runs the estate's own claims against the real index and grades each HOLDS or DRIFTED. Proof-by-re-running, applied to the estate itself.",
+  "author": "sjgant80-hub <sjgant80@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test",
+    "gate": "node tools/witness.mjs mutate kernel/attest.mjs && node tools/witness.mjs fuzz ./kernel/attest.mjs attest && node tools/witness.mjs fuzz ./kernel/attest.mjs recompute"
+  }
+}
