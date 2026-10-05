@@ -1,0 +1,7 @@
+[
+  {
+    "mutation": "&& → ||",
+    "snippet": "const d = digest && typeof digest === 'object' && !Array.isArray(digest) ? digest : {};",
+    "reason": "equivalent: d is only a property-bag read for org/generated/verified/stored, and nodes falls back through Array.isArray(digest), so the array path and every non-object path yield identical nodes/facts/output regardless of which boolean joins the two type guards. Verified by tracing null/number/string/array/object inputs: output byte-identical, no throw divergence."
+  }
+]

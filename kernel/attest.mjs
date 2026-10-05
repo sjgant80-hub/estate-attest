@@ -77,15 +77,15 @@ export function recompute(nodes) {
 //                                              (the index not lying to itself)
 //   repo       {name, private?, live?}       — a named repo exists, with optional flag assertions
 export function checkClaim(claim, facts, nodes) {
-  const c = claim && typeof claim === 'object' ? claim : {};
-  const base = {
-    id: String(c.id == null ? '' : c.id),
-    label: String(c.label == null ? '' : c.label),
-    kind: String(c.kind == null ? '' : c.kind),
-    source: String(c.source == null ? '' : c.source),
-  };
-  const f = facts && typeof facts === 'object' ? facts : {};
   try {
+    const c = claim && typeof claim === 'object' ? claim : {};
+    const base = {
+      id: String(c.id == null ? '' : c.id),
+      label: String(c.label == null ? '' : c.label),
+      kind: String(c.kind == null ? '' : c.kind),
+      source: String(c.source == null ? '' : c.source),
+    };
+    const f = facts && typeof facts === 'object' ? facts : {};
     if (c.kind === 'count') {
       const actual = Number(f[c.metric]);
       const holds = cmp(String(c.op || 'eq'), actual, c.expected, c.tol);
@@ -110,7 +110,7 @@ export function checkClaim(claim, facts, nodes) {
     }
     return { ...base, holds: false, claimed: null, actual: null, detail: 'unknown claim kind' };
   } catch {
-    return { ...base, holds: false, claimed: null, actual: null, detail: 'error grading claim' };
+    return { id: '', label: '', kind: '', source: '', holds: false, claimed: null, actual: null, detail: 'error grading claim' };
   }
 }
 

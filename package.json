@@ -7,6 +7,6 @@
   "license": "MIT",
   "scripts": {
     "test": "node --test",
-    "gate": "node tools/witness.mjs mutate kernel/attest.mjs && node tools/witness.mjs fuzz ./kernel/attest.mjs attest && node tools/witness.mjs fuzz ./kernel/attest.mjs recompute"
+    "gate": "node tools/witness.mjs mutate kernel/attest.mjs && node tools/witness.mjs fuzz ./kernel/attest.mjs attest && node tools/witness.mjs fuzz ./kernel/attest.mjs recompute && node tools/witness.mjs fuzz ./kernel/attest.mjs checkClaim"
   }
 }

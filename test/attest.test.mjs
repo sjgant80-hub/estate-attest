@@ -127,7 +127,16 @@ test('checkClaim: repo live-flag match and mismatch', () => {
 });
 test('checkClaim: unknown kind never holds', () => {
   assert.equal(checkClaim({ kind: 'nope' }, FACTS, NODES).holds, false);
-  assert.equal(checkClaim(null, FACTS, NODES).holds, false);
+  const nul = checkClaim(null, FACTS, NODES);
+  assert.equal(nul.holds, false);
+  assert.equal(nul.detail, 'unknown claim kind'); // kills `claim &&` → `||` (mutant would keep null → throw → 'error grading claim')
+});
+test('checkClaim: never throws on a hostile claim', () => {
+  const toxic = { get kind() { throw new Error('boom'); } };
+  const r = checkClaim(toxic, FACTS, NODES);
+  assert.equal(r.holds, false);
+  assert.equal(r.detail, 'error grading claim');
+  assert.equal(checkClaim(5, FACTS, NODES).holds, false);
 });
 
 // ── attest (the boundary) ──────────────────────────────────────────────────────
@@ -179,4 +188,58 @@ test('attest: array digest is treated as nodes', () => {
   const r = attest(NODES, [{ kind: 'count', metric: 'total', op: 'eq', expected: 5 }]);
   assert.equal(r.facts.total, 5);
   assert.equal(r.summary.held, 1);
+});
+
+// ── normalization & passthrough pins (prove the defensive guards are not theatre) ──
+test('checkClaim: carries id/label/kind/source through, blank when absent', () => {
+  const r = checkClaim({ kind: 'count', id: 'x1', label: 'Lbl', source: 'Src', metric: 'total', expected: 5 }, FACTS, NODES);
+  assert.equal(r.id, 'x1');       // kills id `== null` → `!= null`
+  assert.equal(r.label, 'Lbl');   // kills label guard
+  assert.equal(r.kind, 'count');  // kills kind guard
+  assert.equal(r.source, 'Src');  // kills source guard
+  const blank = checkClaim({ kind: 'count', metric: 'total', expected: 5 }, FACTS, NODES);
+  assert.equal(blank.id, '');
+  assert.equal(blank.source, '');
+});
+test('checkClaim: count result carries metric and defaults op to eq', () => {
+  const r = checkClaim({ kind: 'count', metric: 'private', expected: 2 }, FACTS, NODES);
+  assert.equal(r.metric, 'private'); // kills `c.metric || ''` → `&&`
+  assert.equal(r.op, 'eq');          // kills `c.op || 'eq'` → `&&` (would yield 'undefined')
+});
+test('checkClaim: consistent result carries its metric', () => {
+  const r = checkClaim({ kind: 'consistent', metric: 'private', stored: 2 }, FACTS, NODES);
+  assert.equal(r.metric, 'private'); // kills consistent `c.metric || ''` → `&&`
+});
+test('checkClaim: repo result carries the claimed name', () => {
+  const r = checkClaim({ kind: 'repo', name: 'fallforgemint' }, FACTS, NODES);
+  assert.equal(r.claimed.name, 'fallforgemint'); // kills repo `c.name || ''` → `&&`
+});
+test('checkClaim: non-object facts never exposes a real metric', () => {
+  // facts MUST be an object; a string facts must not leak e.g. its .length as a metric value
+  const r = checkClaim({ kind: 'count', metric: 'length', op: 'eq', expected: 3 }, 'abc', NODES);
+  assert.equal(r.holds, false); // kills facts `&&` → `||` (mutant would read 'abc'.length === 3)
+});
+test('attest: reads an object-form manifest {claims:[…]}', () => {
+  const r = attest(DIGEST, { claims: [{ kind: 'count', metric: 'total', op: 'eq', expected: 5 }] });
+  assert.equal(r.summary.total, 1); // kills manifest `typeof === 'object'` → `!==`
+  assert.equal(r.summary.held, 1);
+});
+test('attest: a non-array claims field is ignored, not iterated', () => {
+  const r = attest(DIGEST, { claims: 'not-an-array' });
+  assert.equal(r.summary.total, 0); // kills manifest second `&&` → `||` (a string would iterate char-by-char)
+});
+test('attest: a null manifest still computes facts from the digest', () => {
+  const r = attest(DIGEST, null);
+  assert.equal(r.facts.total, 5);   // kills manifest first `&&` → `||` (mutant throws on null.claims → catch → facts 0)
+  assert.equal(r.summary.total, 0);
+});
+test('attest: carries generated/verified/stored from the digest', () => {
+  const r = attest(DIGEST, []);
+  assert.equal(r.generated, '2026-01-01');             // kills generated `=== 'string'` → `!==`
+  assert.equal(r.verified, '2026-01-02');              // kills verified guard
+  assert.deepEqual(r.stored, { total: 5, private: 2 }); // kills stored `=== 'object'` → `!==`
+});
+test('attest: a non-object stored becomes null', () => {
+  const r = attest({ org: 'o', nodes: [], stored: 5 }, []);
+  assert.equal(r.stored, null); // kills stored `&&` → `||`
 });
