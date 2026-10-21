@@ -48,4 +48,12 @@ node gen-digest.mjs         # regenerate estate-digest.json from the real index 
 - No pricing, no private contents. The private cosmology stays private.
 - On the index it reads: `pages` enabled (1,545) is deliberately distinguished from `live` (540, HTTP-verified) — the page shows the gap rather than papering over it.
 
+## Credit
+
+Recomputing every claim from the raw facts, instead of trusting a stored headline, draws on the Guided Entropy Principle (GEP) result that **a stable system can stabilize a wrong reference** — a number can hold steady in memory and still be wrong. The typed verdict with a fingerprint over the canonical result follows the shape of that paper's proposed audit receipt (a verdict plus a hash of its derivation).
+
+> Gary W. Floyd, Lumiea Systems Research Division — ThunderStruck Service LLC — "From GEP Stabilization to Dual-Map Ethical Reasoning: A derivation of positive ethical evidence, negative ethical evidence, and non-legal moral reasoning," Derivation v0.2. Open Defensive Prior Art (Creative Commons).
+
+estate-attest itself — kernel, manifest, page — is the estate's own work. See [NOTICE](NOTICE).
+
 _MIT · part of the [AI Native Solutions](https://www.ai-nativesolutions.com/) estate._
