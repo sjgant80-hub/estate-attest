@@ -2,7 +2,7 @@
 // estate-attest · kernel — the trust rail turned INWARD, on the estate itself.
 //
 // The estate's one defensible asset is proof-by-re-running. Its one recurring wound is the gap
-// between a CLAIM ("1,768 repos", "540 pages live", "claudedidy is private") and a VERIFIED fact.
+// between a CLAIM ("1,768 repos", "540 pages live", "witness is live") and a VERIFIED fact.
 // This kernel closes that gap for the estate's own self-description:
 //
 //   given  the estate's FACTS  (a digest of the real estate-index.json — generated, never typed)

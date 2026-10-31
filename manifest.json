@@ -16,7 +16,6 @@
     { "id": "idx-withdesc", "kind": "consistent", "metric": "withDesc", "stored": 1710, "source": "estate-index.json headline", "label": "Stored description count equals the recompute" },
 
     { "id": "repo-fallforgemint", "kind": "repo", "name": "fallforgemint",  "live": true,                  "source": "fallforgemint.md", "label": "fallforgemint is a live build" },
-    { "id": "repo-claudedidy",    "kind": "repo", "name": "claudedidy",     "private": true, "live": false, "source": "claudedidy-repo.md", "label": "claudedidy (the gate) is a private, non-public repo" },
     { "id": "repo-witness",       "kind": "repo", "name": "witness",        "live": true,                  "source": "estate-business-map", "label": "witness (the trust rail) is live" },
     { "id": "repo-fall-os",       "kind": "repo", "name": "fall-os",        "live": true,                  "source": "fall-os.md", "label": "fall-os (crown PWA) is live" },
     { "id": "repo-divorcerbot",   "kind": "repo", "name": "divorcerbot",    "live": true,                  "source": "divorcerbot.md", "label": "divorcerbot is live" },

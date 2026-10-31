@@ -2,7 +2,7 @@
 
 **▶ Live: https://sjgant80-hub.github.io/estate-attest/**
 
-**The trust rail, turned inward.** The estate's one defensible asset is *proof-by-re-running*. Its one recurring wound is the gap between a **claim** ("1,768 repos", "540 pages live", "claudedidy is private") and a **verified fact**. estate-attest closes that gap for the estate's own self-description: it re-runs the estate's claims about itself against the real index and grades each one **HOLDS** or **DRIFTED** — live in your browser, and on GitHub's own runner.
+**The trust rail, turned inward.** The estate's one defensible asset is *proof-by-re-running*. Its one recurring wound is the gap between a **claim** ("1,768 repos", "540 pages live", "witness is live") and a **verified fact**. estate-attest closes that gap for the estate's own self-description: it re-runs the estate's claims about itself against the real index and grades each one **HOLDS** or **DRIFTED** — live in your browser, and on GitHub's own runner.
 
 ## What it does
 
@@ -14,7 +14,7 @@ Three claim kinds:
 |------|---------|---------|
 | `count` | a recomputed aggregate vs a stated number | `private == 47` |
 | `consistent` | the index's **own stored headline** equals the recompute (the index not lying to itself) | stored `total` == recomputed `total` |
-| `repo` | a named repository exists, with optional visibility assertions | `claudedidy` exists, is `private`, not `live` |
+| `repo` | a named repository exists, with optional visibility assertions | `witness` exists and is `live` |
 
 ## Why it is proof, not a claim
 

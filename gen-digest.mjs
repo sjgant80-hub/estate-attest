@@ -23,8 +23,13 @@ const nodes = Array.isArray(idx.nodes) ? idx.nodes : [];
 
 // Compact per-node projection. Keep names (repo-level claims need them) + the graded booleans +
 // a precomputed desc-presence flag so the digest carries no free text (keeps it small and clean).
+// A PRIVATE repo's name is withheld (''): this digest is served publicly, and the page promises the private
+// subset is counted but never named. Its booleans stay, so every aggregate still recomputes exactly. Names in
+// --withhold <file> (one per line, e.g. today's private list) are withheld too: a repo made private after the
+// index was taken.
+const withheld = (() => { const f = val('--withhold', ''); try { return new Set(f ? readFileSync(f, 'utf8').split(/\r?\n/).map((s) => s.trim()).filter(Boolean) : []); } catch { return new Set(); } })();
 const projected = nodes.map((n) => ({
-  name: String(n && n.name != null ? n.name : ''),
+  name: n && (n.private === true || withheld.has(String(n.name))) ? '' : String(n && n.name != null ? n.name : ''),
   private: n && n.private === true,
   live: n && n.live === true,
   pages: n && n.pages === true,
